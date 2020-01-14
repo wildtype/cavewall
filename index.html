@@ -1,86 +1,8 @@
 <html>
   <head>
-    <style>
-      * { padding:0; margin:0; }
-      body { font-family: sans-serif; font-size: 18px; }
-      #content__search-container { border-bottom: 2px solid #ddd; }
-      #content__search { border: none; padding: .5em; width: 100%; font-size: 18px; }
-      #content-main { height: calc(100vh - 44px); }
-      #content-main__list { float: left; width: 200px; height: 100%; border-right: 2px solid #ddd; }
-      #content-main__editor-container { margin-left: 202px; height: 100%; width: calc(100vw - 214px); }
-      #content-main__editor { border: none; width: 100%; height: 100%; padding: .5em; font-size: 18px; line-height: 1.4em; }
-      .content-main__list-item { padding: .5em; }
-      .content-main__list-item--active { background-color: #55f; color: #fff; }
-      .content__title { font-weight: 500; display: block; }
-      .content__preview { font-size: 12px; color: #666; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    </style>
-    <script>
-    window.main = function() {
-      let searchBox = document.getElementById('content__search');
-      let editBox = document.getElementById('content-main__editor');
-      let noteListElement = document.querySelector('#content-main__list ol');
-      let notes = [];
-      let renderableNotes = [];
-
-      let newContent = function() {
-        let text = searchBox.value;
-
-        searchBox.value = '';
-        editBox.value = text;
-        editBox.focus();
-      };
-
-      let renderNoteList = function() {
-        let noteListFragment = document.createDocumentFragment();
-
-        renderableNotes.forEach((note) => {
-          let noteItem = document.createElement('li');
-          noteItem.dataset.title = note.title;
-          noteItem.classList.add('content-main__list-item');
-
-          noteItem.innerHTML = `
-            <span class="content__title">${note.title}</span>
-            <span class="content__preview">${note.content}</span>
-          `;
-          noteListFragment.appendChild(noteItem);
-        });
-
-        noteListElement.innerHTML = '';
-        noteListElement.appendChild(noteListFragment);
-      };
-
-      let filterNotes = function(term) {
-        renderableNotes = notes.filter((note) => {
-          return note.title.toLowerCase().includes(term.toLowerCase()); 
-        });
-      };
-
-      let search = function(e) {
-        let term = searchBox.value;
-
-        filterNotes(term);
-        renderNoteList();
-      };
-
-      let populateContent = function() {
-        notes = JSON.parse(localStorage.getItem('notes'));
-        renderableNotes = notes;
-        renderNoteList();
-      };
-
-      populateContent();
-      searchBox.addEventListener('keyup', function(e) {
-        if (e.keyCode == 13) {
-          newContent();
-        } else {
-          search();
-        }
-      });
-    };
-    document.addEventListener('DOMContentLoaded', window.main);
-  </script>
+    <link rel="stylesheet" href="assets/css/index.css" type="text/css" />
+    <script src="assets/js/app.js"></script>
   </head>
-
   <body>
     <div id="content">
       <div id="content__search-container">

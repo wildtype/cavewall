@@ -47,6 +47,18 @@ class TestAllFeature(unittest.TestCase):
         self.assertIsNotNone(self.find_element('.content__title', text='Second notes'))
         self.assertIsNotNone(self.find_element('.content__title', text='Third notes'))
 
+    def test_filtering_notes_then_enter_will_edit_selected(self):
+        self.browser.get('http://localhost:8000')
+        search_box = self.find_element('#content__search')
+
+        search_box.send_keys('fir')
+        search_box.send_keys(Keys.ENTER)
+
+        textbox = self.find_element('#content-main__editor')
+
+        self.assertEqual(textbox.get_attribute('value'), '{}\n\n{}'.format(self.notes[0]['title'], self.notes[0]['content']))
+        self.assertEqual(self.browser.switch_to.active_element, textbox)
+
 
     def find_element(self, selector, text=None):
         try:
