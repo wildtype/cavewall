@@ -1,0 +1,26 @@
+name: Run Test
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@master
+    - uses: actions/setup-python@master
+
+    - name: Ensure Firefox and Xvfb present
+      run: |
+        sudo apt install firefox xvfb
+
+    - name: Install test dependencies
+      run: |
+        mkdir gecko
+        wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz -O gecko/geckodriver.tar.gz
+        tar -xvzf gecko/geckodriver.tar.gz -C gecko
+        pip install -r requirements.txt
+        yarn
+
+    - name: Run the test
+      run: |
+        PATH=$PATH:gecko
+        bash runtest.sh
