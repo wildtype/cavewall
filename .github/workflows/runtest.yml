@@ -24,3 +24,13 @@ jobs:
       run: |
         PATH=$PATH:gecko
         bash runtest.sh
+
+    - name: Create tag
+      run: |
+        git tag "CAVEWALL-$(date +%d%m%Y-%H%M%S)"
+
+    - name: Push tag
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        tags: true
