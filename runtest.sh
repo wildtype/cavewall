@@ -8,10 +8,9 @@ function cleanup() {
 }
 
 trap cleanup EXIT
-trap cleanup ERR
 
 yarn webpack
-python -m http.server 8000 &
+python -m http.server 8000 2>/dev/null & 
 SERVER_PID=$!
 
 xvfb-run -a pytest --ignore=node_modules -s

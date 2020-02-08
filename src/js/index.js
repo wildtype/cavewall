@@ -1,63 +1,33 @@
-window.main = function() {
-  let searchBox = document.getElementById('content__search');
-  let editBox = document.getElementById('content-main__editor');
-  let noteListElement = document.querySelector('#content-main__list ol');
-  let notes = [];
-  let renderableNotes = [];
-  let activeNote = undefined;
+import NoteList from './note_list.js';
 
-  let editContent = function() {
-    let selectedNote = renderableNotes[0];
+class Application {
+  constructor() {
+    this.searchBox = document.getElementById('content__search');
+    this.editBox = document.getElementById('content-main__editor');
+    this.noteList = new NoteList();
+  }
 
-    editBox.value = `${selectedNote.title}\n\n${selectedNote.content}`;
-    editBox.focus()
-  };
+  main() {
+    this.noteList.init();
 
-  let renderNoteList = function() {
-    let noteListFragment = document.createDocumentFragment();
-
-    renderableNotes.forEach((note) => {
-      let noteItem = document.createElement('li');
-      noteItem.dataset.title = note.title;
-      noteItem.classList.add('content-main__list-item');
-
-      noteItem.innerHTML = `<span class="content__title">${note.title}</span><span class="content__preview">${note.content}</span>`;
-
-      noteListFragment.appendChild(noteItem);
+    this.searchBox.addEventListener('keyup', (e) => {
+      if (e.keyCode == 13) {
+        this.editContent();
+      } else {
+        this.noteList.search(this.searchBox.value);
+      }
     });
+  }
 
-    noteListElement.innerHTML = '';
-    noteListElement.appendChild(noteListFragment);
-  };
+  editContent() {
+    let selectedNote = this.noteList.renderableNotes[0];
 
-  let filterNotes = function() {
-    let term = searchBox.value;
+    this.editBox.value = `${selectedNote.title}\n\n${selectedNote.body}`;
+    this.editBox.focus()
+  }
+}
 
-    renderableNotes = notes.filter((note) => {
-      return note.title.toLowerCase().includes(term.toLowerCase()); 
-    });
-  };
-
-  let search = function(e) {
-    filterNotes();
-    renderNoteList();
-  };
-
-  let populateContent = function() {
-    notes = JSON.parse(localStorage.getItem('notes'));
-    renderableNotes = notes;
-    renderNoteList();
-  };
-
-  populateContent();
-
-  searchBox.addEventListener('keyup', function(e) {
-    if (e.keyCode == 13) {
-      editContent();
-    } else {
-      search();
-    }
-  });
-};
-
-document.addEventListener('DOMContentLoaded', window.main);
+document.addEventListener('DOMContentLoaded', () => { 
+  let app = new Application();
+  app.main();
+});

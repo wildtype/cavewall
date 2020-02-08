@@ -1,5 +1,6 @@
 import unittest
 import json
+import os
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
@@ -8,8 +9,12 @@ class TestAllFeature(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        fixture = open(os.path.join(os.path.dirname(__file__), 'fixtures/notes.json'), 'r')
+        notes = json.loads(fixture.read())
+        fixture.close()
+
         cls.browser = webdriver.Firefox()
-        cls.notes = [{'title': 'First notes', 'content': 'First content'}, {'title': 'Second notes', 'content': 'Second content'}, {'title': 'Third notes', 'content': 'Third content'}]
+        cls.notes = notes
         cls.browser.get('http://localhost:8000')
         cls.browser.execute_script('window.localStorage.setItem(\'notes\', \'{}\')'.format(json.dumps(cls.notes)))
 
@@ -27,9 +32,9 @@ class TestAllFeature(unittest.TestCase):
 
     def test_all_saved_notes_are_listed(self):
         self.browser.get('http://localhost:8000')
-        for note in self.notes:
+        for note in list(self.notes.values()):
             self.assertIsNotNone(self.find_element('.content__title', text=note['title']))
-            self.assertIsNotNone(self.find_element('.content__preview', text=note['content']))
+            self.assertIsNotNone(self.find_element('.content__preview', text=note['body']))
 
     def test_filtering_notes(self):
         self.browser.get('http://localhost:8000')
@@ -55,7 +60,9 @@ class TestAllFeature(unittest.TestCase):
 
         textbox = self.find_element('#content-main__editor')
 
-        self.assertEqual(textbox.get_attribute('value'), '{}\n\n{}'.format(self.notes[0]['title'], self.notes[0]['content']))
+        expected_title = 'First notes'
+        expected_content = 'First content'
+        self.assertEqual(textbox.get_attribute('value'), '{}\n\n{}'.format(expected_title, expected_content))
         self.assertEqual(self.browser.switch_to.active_element, textbox)
 
 
