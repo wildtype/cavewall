@@ -1,4 +1,4 @@
-import NoteList from './note_list.js';
+import NoteList from './note_list';
 
 class Application {
   constructor() {
@@ -12,18 +12,30 @@ class Application {
 
     this.searchBox.addEventListener('keyup', (e) => {
       if (e.keyCode == 13) {
-        this.editContent();
+        this.editOrNewContent();
       } else {
         this.noteList.search(this.searchBox.value);
       }
     });
   }
 
-  editContent() {
+  editOrNewContent() {
     let selectedNote = this.noteList.renderableNotes[0];
 
-    this.editBox.value = `${selectedNote.title}\n\n${selectedNote.body}`;
-    this.editBox.focus()
+    if (selectedNote) {
+      this.noteList.activeNote = selectedNote;
+      this.editBox.value = `${selectedNote.title}\n\n${selectedNote.body}`;
+      this.editBox.focus()
+    } else {
+      const newTitle = this.searchBox.value;
+
+      this.editBox.value = `${newTitle}\n\n`;
+      this.editBox.focus();
+      this.searchBox.value = '';
+
+      this.noteList.appendNewNote(newTitle);
+      this.noteList.search('');
+    }
   }
 }
 

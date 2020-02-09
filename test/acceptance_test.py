@@ -65,6 +65,23 @@ class TestAllFeature(unittest.TestCase):
         self.assertEqual(textbox.get_attribute('value'), '{}\n\n{}'.format(expected_title, expected_content))
         self.assertEqual(self.browser.switch_to.active_element, textbox)
 
+    def test_filtering_notes_then_enter_will_create_new_notes_when_nothing_found(self):
+        self.browser.get('http://localhost:8000')
+        search_box = self.find_element('#content__search')
+
+        search_box.send_keys('new notes')
+        search_box.send_keys(Keys.ENTER)
+
+        textbox = self.find_element('#content-main__editor')
+        self.assertEqual(textbox.get_attribute('value'), 'new notes\n\n')
+        self.assertEqual(self.browser.switch_to.active_element, textbox)
+
+        self.assertEqual(search_box.get_attribute('value'), '')
+        self.assertIsNotNone(self.find_element('.content__title', text='First notes'))
+        self.assertIsNotNone(self.find_element('.content__title', text='Second notes'))
+        self.assertIsNotNone(self.find_element('.content__title', text='Third notes'))
+        self.assertIsNotNone(self.find_element('.content__title', text='new notes'))
+
 
     def find_element(self, selector, text=None):
         try:

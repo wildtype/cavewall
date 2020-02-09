@@ -1,4 +1,5 @@
 import RenderableNote from './renderable_note';
+import Hashids from 'hashids';
 
 export default class NoteList {
   constructor() {
@@ -8,6 +9,7 @@ export default class NoteList {
     this.allNotes = [];
     this.renderableNotes = [];
     this.activeNote = undefined;
+    this.hashids = new Hashids('cavewall');
   }
 
   init() {
@@ -24,6 +26,21 @@ export default class NoteList {
 
     this.renderableNotes = this.allNotes;
   }
+
+  appendNewNote(title) {
+    const key = this.hashids.encode(Date.now());
+    const time = new Date();
+    const noteData = {
+      title: title,
+      body: '',
+      created_at: time.toISOString(),
+      updated_at: time.toISOString()
+    };
+
+    const newNote = new RenderableNote(key, noteData);
+    this.allNotes.push(newNote);
+  }
+
 
   render() {
     let noteListFragment = document.createDocumentFragment();
