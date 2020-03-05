@@ -1,6 +1,7 @@
 import unittest
 import json
 import os
+import time
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
@@ -81,6 +82,12 @@ class TestAllFeature(unittest.TestCase):
         self.assertIsNotNone(self.find_element('.content__title', text='Second notes'))
         self.assertIsNotNone(self.find_element('.content__title', text='Third notes'))
         self.assertIsNotNone(self.find_element('.content__title', text='new notes'))
+
+        textbox.send_keys('this is new note')
+        time.sleep(6)
+        self.browser.refresh()
+        self.assertIsNotNone(self.find_element('.content__title', text='new notes'))
+        self.assertIsNotNone(self.find_element('.content__preview', text='this is new note'))
 
 
     def find_element(self, selector, text=None):

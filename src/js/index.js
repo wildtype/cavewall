@@ -17,6 +17,14 @@ class Application {
         this.noteList.search(this.searchBox.value);
       }
     });
+
+    setInterval(() => {
+      if (this.noteList.activeNote) {
+        console.log('saving...');
+        this.noteList.activeNote.updateContent(this.editBox.value);
+        this.noteList.saveToStorage();
+      }
+    }, 5000);
   }
 
   editOrNewContent() {

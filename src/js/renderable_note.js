@@ -8,6 +8,15 @@ export default class RenderableNote {
     this.updatedAt = noteData.updated_at;
   }
 
+  get properties() {
+    return {
+      body: this.body,
+      title: this.title,
+      created_at: this.createdAt,
+      updated_at: this.updatedAt
+    };
+  }
+
   render() {
     let noteItem = document.createElement('li');
     noteItem.dataset.title = this.title;
@@ -19,5 +28,12 @@ export default class RenderableNote {
     `;
 
     return noteItem;
+  }
+
+  updateContent(content) {
+    const titleAndBody = content.split("\n\n");
+
+    this.title = titleAndBody[0];
+    this.body = titleAndBody[1];
   }
 }

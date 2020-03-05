@@ -6,6 +6,7 @@ export default class NoteList {
     this.noteListElement = document.querySelector(
       '#content-main__list ol'
     );
+    this.storedNotes = [];
     this.allNotes = [];
     this.renderableNotes = [];
     this.activeNote = undefined;
@@ -18,13 +19,18 @@ export default class NoteList {
   }
 
   populateContent() {
-    let notes = JSON.parse(localStorage.getItem('notes'));
+    this.storedNotes = JSON.parse(localStorage.getItem('notes'));
 
-    this.allNotes = Object.keys(notes).map((key) => {
-      return new RenderableNote(key, notes[key]);
+    this.allNotes = Object.keys(this.storedNotes).map((key) => {
+      return new RenderableNote(key, this.storedNotes[key]);
     });
 
     this.renderableNotes = this.allNotes;
+  }
+
+  saveToStorage() {
+    this.storedNotes[this.activeNote.key] = this.activeNote.properties;
+    localStorage.setItem('notes', JSON.stringify(this.storedNotes));
   }
 
   appendNewNote(title) {
@@ -39,6 +45,7 @@ export default class NoteList {
 
     const newNote = new RenderableNote(key, noteData);
     this.allNotes.push(newNote);
+    this.activeNote = newNote;
   }
 
 
